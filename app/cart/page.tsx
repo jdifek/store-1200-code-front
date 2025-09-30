@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import { Search, User, Scale, Heart, ShoppingCart, Grid3X3, ChevronRight, Star, Phone, Mail, MapPin, Minus, Plus, X, Trash2, ArrowLeft, Lock, Check } from 'lucide-react';
 
@@ -66,13 +67,13 @@ const mockRecommended = [
 const CartPage = () => {
   const [cartItems, setCartItems] = useState(mockCartItems);
   const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number; amount: number } | null>(null);
 
-  const formatPrice = (price) => {
+  const formatPrice = (price: any) => {
     return new Intl.NumberFormat('uk-UA').format(price) + ' ₴';
   };
 
-  const updateQuantity = (id, newQuantity) => {
+  const updateQuantity = (id: any, newQuantity: any) => {
     if (newQuantity < 1) return;
     
     setCartItems(items => 
@@ -84,7 +85,7 @@ const CartPage = () => {
     );
   };
 
-  const removeItem = (id) => {
+  const removeItem = (id: any) => {
     setCartItems(items => items.filter(item => item.id !== id));
   };
 
@@ -114,104 +115,120 @@ const CartPage = () => {
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-white">
-        <header className="border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-2 text-sm text-gray-600 border-b border-gray-100">
-              <div className="flex items-center space-x-6">
-                <span className="flex items-center"><Phone size={14} className="mr-1" />+38 (067) 123-45-67</span>
-                <span className="flex items-center"><Mail size={14} className="mr-1" />info@skladtech.ua</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <a href="#" className="hover:text-green-700">Доставка</a>
-                <a href="#" className="hover:text-green-700">Оплата</a>
-                <a href="#" className="hover:text-green-700">Гарантія</a>
-              </div>
+      {/* HEADER */}
+      <header className="border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* top bar */}
+          <div className="hidden md:flex justify-between items-center py-2 text-sm text-gray-600 border-b border-gray-100">
+            <div className="flex items-center space-x-6">
+              <span className="flex items-center"><Phone size={14} className="mr-1" />+38 (067) 123-45-67</span>
+              <span className="flex items-center"><Mail size={14} className="mr-1" />info@skladtech.ua</span>
             </div>
-            
-            <div className="flex items-center justify-between py-4">
-              <div className="flex items-center space-x-8">
-                <div className="text-2xl font-bold text-green-800">SkladTech</div>
-                <button className="bg-green-800 text-white px-6 py-2 rounded flex items-center hover:bg-green-900 transition-colors">
-                  <Grid3X3 size={18} className="mr-2" />
-                  Каталог товарів
-                </button>
-              </div>
-
-              <div className="flex-1 max-w-xl mx-8">
-                <div className="relative">
-                  <input type="text" placeholder="Пошук товарів..." className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-                  <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <button className="p-2 hover:bg-gray-100 rounded relative"><Scale size={20} className="text-gray-600" /></button>
-                <button className="p-2 hover:bg-gray-100 rounded relative"><Heart size={20} className="text-gray-600" /></button>
-                <button className="p-2 hover:bg-gray-100 rounded"><User size={20} className="text-gray-600" /></button>
-                <button className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg hover:bg-yellow-200 transition-colors">
-                  <ShoppingCart size={18} className="text-green-800" />
-                  <span className="text-green-800 font-medium">Кошик (0)</span>
-                </button>
-              </div>
+            <div className="flex items-center space-x-4">
+              <a href="#" className="hover:text-green-700">Доставка</a>
+              <a href="#" className="hover:text-green-700">Оплата</a>
+              <a href="#" className="hover:text-green-700">Гарантія</a>
             </div>
-
-            <nav className="py-3 border-t border-gray-100">
-              <div className="flex items-center space-x-2 text-sm">
-                <a href="#" className="text-gray-700 hover:text-green-800">Головна</a>
-                <ChevronRight size={14} className="text-gray-400" />
-                <span className="text-green-800">Кошик</span>
-              </div>
-            </nav>
           </div>
-        </header>
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <div className="text-8xl mb-8">🛒</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Ваш кошик порожній</h1>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">Додайте товари до кошика, щоб оформити замовлення</p>
-          <button className="bg-green-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors">Перейти до каталогу</button>
+    
+          {/* main header */}
+          <div className="flex items-center justify-between py-4 flex-wrap gap-4">
+            {/* logo + catalog */}
+            <div className="flex items-center space-x-4 sm:space-x-8">
+              <div className="text-2xl font-bold text-green-800">SkladTech</div>
+              <button className="hidden sm:flex bg-green-800 text-white px-4 sm:px-6 py-2 rounded items-center hover:bg-green-900 transition-colors">
+                <Grid3X3 size={18} className="mr-2" />
+                Каталог
+              </button>
+            </div>
+    
+            {/* search */}
+            <div className="w-full order-3 sm:order-none sm:flex-1 sm:max-w-xl sm:mx-8">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Пошук товарів..."
+                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+                <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+              </div>
+            </div>
+    
+            {/* actions */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <button className="p-2 hover:bg-gray-100 rounded relative"><Scale size={20} className="text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded relative"><Heart size={20} className="text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><User size={20} className="text-gray-600" /></button>
+              <button className="flex items-center space-x-1 sm:space-x-2 bg-yellow-100 px-3 sm:px-4 py-2 rounded-lg hover:bg-yellow-200 transition-colors">
+                <ShoppingCart size={18} className="text-green-800" />
+                <span className="text-green-800 font-medium hidden sm:inline">Кошик (0)</span>
+              </button>
+            </div>
+          </div>
+    
+          {/* breadcrumbs */}
+          <nav className="py-2 sm:py-3 border-t border-gray-100">
+            <div className="flex items-center space-x-2 text-xs sm:text-sm">
+              <a href="#" className="text-gray-700 hover:text-green-800">Головна</a>
+              <ChevronRight size={14} className="text-gray-400" />
+              <span className="text-green-800">Кошик</span>
+            </div>
+          </nav>
         </div>
-
-        <footer className="bg-gray-900 text-white py-12 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div>
-                <div className="text-2xl font-bold mb-4">SkladTech</div>
-                <p className="text-gray-300 mb-4">Професійне торгове обладнання та комплексні рішення для бізнесу</p>
-                <div className="flex items-center text-gray-300"><MapPin size={16} className="mr-2" /><span>Київ, вул. Промислова, 15</span></div>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Каталог</h3>
-                <ul className="space-y-2 text-gray-300">
-                  <li><a href="#" className="hover:text-white transition-colors">Холодильне обладнання</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Торгові ваги</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Стелажі та меблі</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Касове обладнання</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Послуги</h3>
-                <ul className="space-y-2 text-gray-300">
-                  <li><a href="#" className="hover:text-white transition-colors">Проектування</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Монтаж</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Сервісне обслуговування</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Консультації</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Контакти</h3>
-                <div className="space-y-2 text-gray-300">
-                  <div className="flex items-center"><Phone size={16} className="mr-2" /><span>+38 (067) 123-45-67</span></div>
-                  <div className="flex items-center"><Mail size={16} className="mr-2" /><span>info@skladtech.ua</span></div>
-                </div>
-              </div>
+      </header>
+    
+      {/* EMPTY CART */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
+        <div className="text-6xl sm:text-8xl mb-6 sm:mb-8">🛒</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Ваш кошик порожній</h1>
+        <p className="text-gray-600 mb-6 sm:mb-8 max-w-md mx-auto">Додайте товари до кошика, щоб оформити замовлення</p>
+        <button className="bg-green-800 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors">
+          Перейти до каталогу
+        </button>
+      </div>
+    
+      {/* FOOTER */}
+      <footer className="bg-gray-900 text-white py-12 mt-12 sm:mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-2xl font-bold mb-4">SkladTech</div>
+              <p className="text-gray-300 mb-4">Професійне торгове обладнання та комплексні рішення для бізнесу</p>
+              <div className="flex items-center text-gray-300"><MapPin size={16} className="mr-2" /><span>Київ, вул. Промислова, 15</span></div>
             </div>
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-              <p>&copy; 2024 SkladTech. Всі права захищені.</p>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Каталог</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">Холодильне обладнання</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Торгові ваги</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Стелажі та меблі</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Касове обладнання</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Послуги</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">Проектування</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Монтаж</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Сервісне обслуговування</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Консультації</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Контакти</h3>
+              <div className="space-y-2 text-gray-300">
+                <div className="flex items-center"><Phone size={16} className="mr-2" /><span>+38 (067) 123-45-67</span></div>
+                <div className="flex items-center"><Mail size={16} className="mr-2" /><span>info@skladtech.ua</span></div>
+              </div>
             </div>
           </div>
-        </footer>
-      </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+            <p>&copy; 2024 SkladTech. Всі права захищені.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
     );
   }
 
