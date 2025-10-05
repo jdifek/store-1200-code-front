@@ -21,22 +21,22 @@ export const Footer = () => {
           <ul className="space-y-2 text-gray-300">
             <li>
               <a href="#" className="hover:text-white transition-colors">
-                Холодильне обладнання
+              Контейнеры
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white transition-colors">
-                Торгові ваги
+              Ёмкости
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white transition-colors">
-                Стелажі та меблі
+              Бытовки на колёсах
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white transition-colors">
-                Касове обладнання
+              Асики
               </a>
             </li>
           </ul>
