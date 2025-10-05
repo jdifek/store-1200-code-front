@@ -69,37 +69,7 @@ const CheckoutPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-2 text-sm text-gray-600 border-b border-gray-100">
-            <div className="flex items-center space-x-6">
-              <span className="flex items-center"><Phone size={14} className="mr-1" />+38 (067) 123-45-67</span>
-              <span className="flex items-center"><Mail size={14} className="mr-1" />info@skladtech.ua</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between py-4">
-            <div className="text-2xl font-bold text-green-800">
-              SkladTech
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Lock size={14} />
-              <span>Безпечне оформлення</span>
-            </div>
-          </div>
-
-          <nav className="py-3 border-t border-gray-100">
-            <div className="flex items-center space-x-2 text-sm">
-              <a href="#" className="text-gray-700 hover:text-green-800">Головна</a>
-              <ChevronRight size={14} className="text-gray-400" />
-              <a href="#" className="text-gray-700 hover:text-green-800">Кошик</a>
-              <ChevronRight size={14} className="text-gray-400" />
-              <span className="text-green-800">Оформлення замовлення</span>
-            </div>
-          </nav>
-        </div>
-      </header>
+     
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Оформлення замовлення</h1>
@@ -554,61 +524,7 @@ const CheckoutPage = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-2xl font-bold mb-4">SkladTech</div>
-              <p className="text-gray-300 mb-4">
-                Професійне торгове обладнання та комплексні рішення для бізнесу
-              </p>
-              <div className="flex items-center text-gray-300">
-                <MapPin size={16} className="mr-2" />
-                <span>Київ, вул. Промислова, 15</span>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Каталог</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Холодильне обладнання</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Торгові ваги</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Стелажі та меблі</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Касове обладнання</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Послуги</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Проектування</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Монтаж</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Сервісне обслуговування</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Консультації</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Контакти</h3>
-              <div className="space-y-2 text-gray-300">
-                <div className="flex items-center">
-                  <Phone size={16} className="mr-2" />
-                  <span>+38 (067) 123-45-67</span>
-                </div>
-                <div className="flex items-center">
-                  <Mail size={16} className="mr-2" />
-                  <span>info@skladtech.ua</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SkladTech. Всі права захищені.</p>
-          </div>
-        </div>
-      </footer>
+    
     </div>
   );
 };

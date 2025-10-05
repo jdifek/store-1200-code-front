@@ -61,70 +61,7 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-2 text-sm text-gray-600 border-b border-gray-100">
-            <div className="flex items-center space-x-6">
-              <span className="flex items-center"><Phone size={14} className="mr-1" />+38 (067) 123-45-67</span>
-              <span className="flex items-center"><Mail size={14} className="mr-1" />info@skladtech.ua</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <a href="#" className="hover:text-green-700">Доставка</a>
-              <a href="#" className="hover:text-green-700">Оплата</a>
-              <a href="#" className="hover:text-green-700">Гарантія</a>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center space-x-8">
-              <div className="text-2xl font-bold text-green-800">
-                SkladTech
-              </div>
-              
-              <button className="bg-green-800 text-white px-6 py-2 rounded flex items-center hover:bg-green-900 transition-colors">
-                <Grid3X3 size={18} className="mr-2" />
-                Каталог товарів
-              </button>
-            </div>
-
-            <div className="flex-1 max-w-xl mx-8">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Пошук товарів..."
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-                <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-gray-100 rounded relative">
-                <Scale size={20} className="text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded relative">
-                <Heart size={20} className="text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <User size={20} className="text-gray-600" />
-              </button>
-              <button className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg hover:bg-yellow-200 transition-colors">
-                <ShoppingCart size={18} className="text-green-800" />
-                <span className="text-green-800 font-medium">Кошик</span>
-              </button>
-            </div>
-          </div>
-
-          <nav className="py-3 border-t border-gray-100">
-            <div className="flex items-center space-x-2 text-sm">
-              <a href="#" className="text-gray-700 hover:text-green-800">Головна</a>
-              <ChevronRight size={14} className="text-gray-400" />
-              <span className="text-green-800">Про компанію</span>
-            </div>
-          </nav>
-        </div>
-      </header>
+  
 
       {/* Hero section */}
       <section className="bg-gradient-to-r from-green-800 to-green-700 text-white py-16">
@@ -366,61 +303,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-2xl font-bold mb-4">SkladTech</div>
-              <p className="text-gray-300 mb-4">
-                Професійне торгове обладнання та комплексні рішення для бізнесу
-              </p>
-              <div className="flex items-center text-gray-300">
-                <MapPin size={16} className="mr-2" />
-                <span>Київ, вул. Промислова, 15</span>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Каталог</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Холодильне обладнання</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Торгові ваги</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Стелажі та меблі</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Касове обладнання</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Послуги</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Проектування</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Монтаж</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Сервісне обслуговування</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Консультації</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Контакти</h3>
-              <div className="space-y-2 text-gray-300">
-                <div className="flex items-center">
-                  <Phone size={16} className="mr-2" />
-                  <span>+38 (067) 123-45-67</span>
-                </div>
-                <div className="flex items-center">
-                  <Mail size={16} className="mr-2" />
-                  <span>info@skladtech.ua</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SkladTech. Всі права захищені.</p>
-          </div>
-        </div>
-      </footer>
+ 
     </div>
   );
 };

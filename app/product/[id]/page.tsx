@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import {
   Search,
@@ -22,46 +22,38 @@ import {
   ChevronLeft,
   ChevronUp,
 } from "lucide-react";
+import Image from "next/image";
 
 // Mock данные товара
 const mockProduct = {
   id: "1",
-  name: "Професійна холодильна вітрина для м'яса та ковбасних виробів",
+  name: "Вitmаin Аntminеr S21 Нydrо 319th",
   price: 45600,
   oldPrice: 52000,
   rating: 4,
   reviews: 12,
   discount: 12,
   categoryId: "1",
-  categoryName: "Холодильне обладнання",
-  subcategoryName: "Вітрини холодильні",
-  images: [
-    "/api/placeholder/600/400",
-    "/api/placeholder/600/400",
-    "/api/placeholder/600/400",
-    "/api/placeholder/600/400",
-  ],
-  description:
-    "Професійна холодильна вітрина призначена для демонстрації та зберігання м'ясних та ковбасних виробів у торгових залах супермаркетів, м'ясних магазинів та гастрономів.",
-  specifications: {
-    "Габарити (ДхШхВ)": "120 × 80 × 85 см",
-    "Температурний режим": "-2°C до +5°C",
-    Потужність: "850 Вт",
-    Вага: "145 кг",
-    "Матеріал корпусу": "Нержавіюча сталь",
-    "Тип охолодження": "Статичне",
-    Обсяг: "380 л",
-    "Країна виробник": "Україна",
-    Гарантія: "24 місяці",
-  },
-  features: [
-    "Автоматичне розморожування",
-    "LED освітлення",
-    "Скляна кришка з функцією розсування",
-    "Регульовані полиці",
-    "Цифровий термостат",
-    "Енергоефективність класу A+",
-  ],
+  categoryName: "Асики",
+  images: ["/1.jpg", "/2.jpg"],
+  description: `Нове обладнання для майнінгу Вitmаin Аntminеr S21 Нydrо 335th. В наявності є багато різних варіантів, для оптових покупців діють знижки. Гарантія 12 місяців. Доставка по Україні.
+
+  📝Тех.характеристики апарату:
+
+⚡️Модель апарату: Вitmаin Аntminеr S21 Нydrо 335th
+
+⚡️Здобувані монети: ВТС
+
+⚡️Алгоритм: SНА-256.
+
+⚡️Наshraте -- 335 th
+
+⚡️Охолодження: Гідроохолодження
+
+⚡️Енергоспоживання: 5360 Wаtt
+
+⚡️Рівень шуму: 70 дБ
+`,
   inStock: true,
   stockCount: 5,
 };
@@ -70,39 +62,39 @@ const mockProduct = {
 const mockSimilarProducts = [
   {
     id: "2",
-    name: "Холодильна вітрина для молочних продуктів",
-    price: 38900,
+    name: "Мобильный растворный узел для кас, жку, сзр",
+    price: 160000,
     oldPrice: null,
     rating: 4,
     reviews: 8,
-    image: "/api/placeholder/250/180",
+    image: "/4.jpg",
   },
   {
     id: "3",
-    name: "Морозильна скриня для заморожених продуктів",
-    price: 52300,
-    oldPrice: 58000,
+    name: "Смешивающий растворный узел для жидких и сухих удо",
+    price: 185000,
+    oldPrice: 187000,
     rating: 5,
     reviews: 15,
-    image: "/api/placeholder/250/180",
+    image: "/6.jpg",
   },
   {
     id: "4",
-    name: "Вертикальна холодильна шафа",
+    name: "Вitmаin Аntminеr S21 Нydrо 319th",
     price: 67800,
     oldPrice: null,
     rating: 4,
     reviews: 6,
-    image: "/api/placeholder/250/180",
+    image: "/1.jpg",
   },
   {
     id: "5",
-    name: "Холодильний стелаж багаторівневий",
-    price: 43200,
-    oldPrice: 47500,
+    name: "Вitmаin Аntminеr S21 Нydrо 335th",
+    price: 92000,
+    oldPrice: 99500,
     rating: 4,
     reviews: 9,
-    image: "/api/placeholder/250/180",
+    image: "/2.jpg",
   },
 ];
 
@@ -174,111 +166,20 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header - same as other pages */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top bar */}
-          <div className="flex justify-between items-center py-2 text-sm text-gray-600 border-b border-gray-100">
-            <div className="flex items-center space-x-6">
-              <span className="flex items-center">
-                <Phone size={14} className="mr-1" />
-                +38 (067) 123-45-67
-              </span>
-              <span className="flex items-center">
-                <Mail size={14} className="mr-1" />
-                info@skladtech.ua
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <a href="#" className="hover:text-green-700">
-                Доставка
-              </a>
-              <a href="#" className="hover:text-green-700">
-                Оплата
-              </a>
-              <a href="#" className="hover:text-green-700">
-                Гарантія
-              </a>
-            </div>
-          </div>
-
-          {/* Main header */}
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center space-x-8">
-              <div className="text-2xl font-bold text-green-800">SkladTech</div>
-
-              <button className="bg-green-800 text-white px-6 py-2 rounded flex items-center hover:bg-green-900 transition-colors">
-                <Grid3X3 size={18} className="mr-2" />
-                Каталог товарів
-              </button>
-            </div>
-
-            {/* Search */}
-            <div className="flex-1 max-w-xl mx-8">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Пошук товарів..."
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-                <Search
-                  className="absolute left-3 top-2.5 text-gray-400"
-                  size={18}
-                />
-              </div>
-            </div>
-
-            {/* Header actions */}
-            <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-gray-100 rounded relative">
-                <Scale size={20} className="text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded relative">
-                <Heart size={20} className="text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <User size={20} className="text-gray-600" />
-              </button>
-              <button className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg hover:bg-yellow-200 transition-colors">
-                <ShoppingCart size={18} className="text-green-800" />
-                <span className="text-green-800 font-medium">Кошик</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Breadcrumb */}
-          <nav className="py-3 border-t border-gray-100">
-            <div className="flex items-center space-x-2 text-sm">
-              <a href="#" className="text-gray-700 hover:text-green-800">
-                Головна
-              </a>
-              <ChevronRight size={14} className="text-gray-400" />
-              <a href="#" className="text-gray-700 hover:text-green-800">
-                Каталог
-              </a>
-              <ChevronRight size={14} className="text-gray-400" />
-              <a href="#" className="text-gray-700 hover:text-green-800">
-                {mockProduct.categoryName}
-              </a>
-              <ChevronRight size={14} className="text-gray-400" />
-              <span className="text-gray-500 truncate max-w-md">
-                {mockProduct.name}
-              </span>
-            </div>
-          </nav>
-        </div>
-      </header>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
           <div>
             <div className="relative mb-4">
-              <div className="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center text-8xl text-gray-400">
-                  📦
-                </div>
+              <div className="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden relative">
+                <Image
+                  src={mockProduct.images[selectedImageIndex]}
+                  alt={mockProduct.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
+
               {mockProduct.discount && (
                 <span className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                   -{mockProduct.discount}%
@@ -288,17 +189,22 @@ const ProductPage = () => {
 
             {/* Thumbnail images */}
             <div className="flex space-x-2">
-              {mockProduct.images.map((_, index) => (
+              {mockProduct.images.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
-                  className={`w-16 h-16 bg-gray-100 rounded border-2 ${
+                  className={`relative w-16 h-16 rounded border-2 overflow-hidden ${
                     selectedImageIndex === index
                       ? "border-green-800"
                       : "border-gray-200"
-                  } hover:border-green-600 transition-colors flex items-center justify-center text-2xl`}
+                  } hover:border-green-600 transition-colors`}
                 >
-                  📦
+                  <Image
+                    src={img}
+                    alt={`${mockProduct.name} ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -356,7 +262,7 @@ const ProductPage = () => {
             </div>
 
             {/* Key features */}
-            <div className="mb-8">
+            {/* <div className="mb-8">
               <h3 className="font-semibold text-gray-900 mb-3">
                 Ключові характеристики:
               </h3>
@@ -371,51 +277,59 @@ const ProductPage = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
 
             {/* Quantity and Add to Cart */}
             <div className="mb-8">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center border border-gray-300 rounded-lg">
-                  <button
-                    onClick={() => handleQuantityChange(-1)}
-                    className="p-3 hover:bg-gray-50 disabled:opacity-50"
-                    disabled={quantity <= 1}
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="px-4 py-3 border-x border-gray-300 min-w-16 text-center">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => handleQuantityChange(1)}
-                    className="p-3 hover:bg-gray-50 disabled:opacity-50"
-                    disabled={quantity >= mockProduct.stockCount}
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
+  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0">
+    {/* Количество */}
+    <div className="flex items-center border border-gray-300 rounded-lg w-full sm:w-auto justify-between sm:justify-start">
+      <button
+        onClick={() => handleQuantityChange(-1)}
+        className="p-3 hover:bg-gray-50 disabled:opacity-50 text-gray-700 !text-gray-700"
+        disabled={quantity <= 1}
+      >
+        <Minus size={16} />
+      </button>
 
-                <button className="flex-1 bg-green-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors flex items-center justify-center">
-                  <ShoppingCart size={18} className="mr-2" />
-                  Додати в кошик
-                </button>
+      <span className="px-4 py-3 border-x border-gray-300 min-w-16 text-center text-gray-900 !text-gray-900 font-medium">
+        {quantity}
+      </span>
 
-                <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <Heart size={18} className="text-gray-600" />
-                </button>
-                <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <Scale size={18} className="text-gray-600" />
-                </button>
-              </div>
-            </div>
+      <button
+        onClick={() => handleQuantityChange(1)}
+        className="p-3 hover:bg-gray-50 disabled:opacity-50 text-gray-700 !text-gray-700"
+        disabled={quantity >= mockProduct.stockCount}
+      >
+        <Plus size={16} />
+      </button>
+    </div>
+
+    {/* Кнопка "Додати в кошик" */}
+    <button className="flex-1 bg-green-800 text-white !text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors flex items-center justify-center whitespace-nowrap">
+      <ShoppingCart size={18} className="mr-2" />
+      Додати в кошик
+    </button>
+
+    {/* Кнопки избранного и сравнения */}
+    <div className="flex items-center space-x-3 justify-center sm:justify-start">
+      <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 !text-gray-700">
+        <Heart size={18} className="text-gray-600 !text-gray-600" />
+      </button>
+      <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 !text-gray-700">
+        <Scale size={18} className="text-gray-600 !text-gray-600" />
+      </button>
+    </div>
+  </div>
+</div>
+
 
             {/* Quick actions */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               <div className="flex items-center p-3 bg-green-50 rounded-lg">
                 <Truck className="text-green-800 mr-3" size={20} />
                 <div>
-                  <div className="font-medium text-sm">
+                  <div className="font-medium  !text-gray-600 text-sm">
                     Безкоштовна доставка
                   </div>
                   <div className="text-xs text-gray-600">від 10000 ₴</div>
@@ -424,14 +338,14 @@ const ProductPage = () => {
               <div className="flex items-center p-3 bg-green-50 rounded-lg">
                 <Shield className="text-green-800 mr-3" size={20} />
                 <div>
-                  <div className="font-medium text-sm">Гарантія 24 міс.</div>
+                  <div className="font-medium  !text-gray-600 text-sm">Гарантія 24 міс.</div>
                   <div className="text-xs text-gray-600">офіційна</div>
                 </div>
               </div>
               <div className="flex items-center p-3 bg-green-50 rounded-lg">
                 <Headphones className="text-green-800 mr-3" size={20} />
                 <div>
-                  <div className="font-medium text-sm">Консультація</div>
+                  <div className="font-medium  !text-gray-600 text-sm">Консультація</div>
                   <div className="text-xs text-gray-600">безкоштовна</div>
                 </div>
               </div>
@@ -455,7 +369,6 @@ const ProductPage = () => {
             <nav className="flex space-x-8">
               {[
                 { id: "description", name: "Опис" },
-                { id: "specifications", name: "Характеристики" },
                 { id: "reviews", name: `Відгуки (${mockProduct.reviews})` },
               ].map((tab) => (
                 <button
@@ -476,11 +389,11 @@ const ProductPage = () => {
           <div className="py-8">
             {activeTab === "description" && (
               <div className="prose max-w-none">
-                <p className="text-gray-700 text-lg mb-6">
+                <p className="text-gray-700 text-lg mb-6 whitespace-pre-line">
                   {mockProduct.description}
                 </p>
 
-                <h3 className="text-xl font-semibold mb-4">Переваги:</h3>
+                {/* <h3 className="text-xl font-semibold mb-4">Переваги:</h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
                   {mockProduct.features.map((feature, index) => (
                     <li key={index} className="flex items-start">
@@ -491,19 +404,19 @@ const ProductPage = () => {
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
 
-                <h3 className="text-xl font-semibold mb-4">Призначення:</h3>
+                {/* <h3 className="text-xl font-semibold mb-4">Призначення:</h3>
                 <p className="text-gray-700">
                   Ідеально підходить для супермаркетів, м'ясних магазинів,
                   гастрономів та інших торгових точок, де необхідно забезпечити
                   належне зберігання та презентацію м'ясних та ковбасних
                   виробів.
-                </p>
+                </p> */}
               </div>
             )}
 
-            {activeTab === "specifications" && (
+            {/* {activeTab === "specifications" && (
               <div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {Object.entries(mockProduct.specifications)
@@ -536,89 +449,90 @@ const ProductPage = () => {
                   </button>
                 )}
               </div>
-            )}
+            )} */}
 
-            {activeTab === "reviews" && (
-              <div>
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Відгуки покупців
-                    </h3>
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center">
-                        {renderStars(mockProduct.rating)}
-                        <span className="ml-2 text-lg font-semibold">
-                          {mockProduct.rating.toFixed(1)}
-                        </span>
-                      </div>
-                      <span className="text-gray-600">
-                        {mockProduct.reviews} відгуків
-                      </span>
-                    </div>
-                  </div>
-                  <button className="bg-green-800 text-white px-6 py-2 rounded-lg hover:bg-green-900 transition-colors">
-                    Написати відгук
-                  </button>
-                </div>
+{activeTab === "reviews" && (
+  <div className="w-full">
+    {/* Заголовок + кнопка */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-4 sm:space-y-0">
+      <div>
+        <h3 className="text-xl font-semibold mb-2 !text-gray-800">
+          Відгуки покупців
+        </h3>
+        <div className="flex flex-wrap items-center space-x-4">
+          <div className="flex items-center">
+            {renderStars(mockProduct.rating)}
+            <span className="ml-2 text-lg font-semibold !text-gray-900">
+              {mockProduct.rating.toFixed(1)}
+            </span>
+          </div>
+          <span className="!text-gray-700">
+            {mockProduct.reviews} відгуків
+          </span>
+        </div>
+      </div>
 
-                <div className="space-y-8">
-                  {mockReviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="border-b border-gray-200 pb-8"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <div className="font-semibold text-gray-900">
-                            {review.author}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {review.company}
-                          </div>
-                          <div className="flex items-center mt-2">
-                            {renderStars(review.rating)}
-                            <span className="ml-2 text-sm text-gray-500">
-                              {new Date(review.date).toLocaleDateString(
-                                "uk-UA"
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+      <button className="bg-green-800 !text-white px-6 py-2 rounded-lg font-medium hover:bg-green-900 transition-colors w-full sm:w-auto text-center">
+        Написати відгук
+      </button>
+    </div>
 
-                      <p className="text-gray-700 mb-4">{review.content}</p>
-
-                      {review.pros && review.pros.length > 0 && (
-                        <div className="mb-3">
-                          <div className="font-medium text-green-800 mb-2">
-                            Переваги:
-                          </div>
-                          <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                            {review.pros.map((pro, index) => (
-                              <li key={index}>{pro}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {review.cons && review.cons.length > 0 && (
-                        <div>
-                          <div className="font-medium text-red-800 mb-2">
-                            Недоліки:
-                          </div>
-                          <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                            {review.cons.map((con, index) => (
-                              <li key={index}>{con}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+    {/* Список отзывов */}
+    <div className="space-y-8">
+      {mockReviews.map((review) => (
+        <div key={review.id} className="border-b border-gray-200 pb-8">
+          {/* Заголовок отзыва */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
+            <div>
+              <div className="font-semibold !text-gray-900">
+                {review.author}
               </div>
-            )}
+              <div className="text-sm !text-gray-600">{review.company}</div>
+              <div className="flex items-center mt-2 flex-wrap">
+                {renderStars(review.rating)}
+                <span className="ml-2 text-sm !text-gray-500">
+                  {new Date(review.date).toLocaleDateString("uk-UA")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Текст отзыва */}
+          <p className="!text-gray-800 mb-4 leading-relaxed">{review.content}</p>
+
+          {/* Плюсы */}
+          {review.pros && review.pros.length > 0 && (
+            <div className="mb-3">
+              <div className="font-medium !text-green-800 mb-2">
+                Переваги:
+              </div>
+              <ul className="list-disc list-inside text-sm !text-gray-800 space-y-1">
+                {review.pros.map((pro, index) => (
+                  <li key={index}>{pro}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Минусы */}
+          {review.cons && review.cons.length > 0 && (
+            <div>
+              <div className="font-medium !text-red-800 mb-2">
+                Недоліки:
+              </div>
+              <ul className="list-disc list-inside text-sm !text-gray-800 space-y-1">
+                {review.cons.map((con, index) => (
+                  <li key={index}>{con}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
           </div>
         </div>
 
@@ -633,8 +547,20 @@ const ProductPage = () => {
                 key={product.id}
                 className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group"
               >
-                <div className="relative aspect-[4/3] bg-gray-100 rounded-t-lg flex items-center justify-center">
-                  <div className="text-4xl text-gray-400">📦</div>
+                <div className="relative aspect-[4/3] bg-gray-100 rounded-t-lg overflow-hidden">
+                  {product.image ? (
+                    <Image
+                      alt={product.name}
+                      src={product.image}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <div className="text-4xl text-gray-400">📦</div>
+                    </div>
+                  )}
+
                   <div className="absolute top-2 left-2 flex space-x-1">
                     <button className="p-1 bg-white rounded-full shadow hover:bg-gray-50">
                       <Scale size={12} className="text-gray-600" />
@@ -680,94 +606,6 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-2xl font-bold mb-4">SkladTech</div>
-              <p className="text-gray-300 mb-4">
-                Професійне торгове обладнання та комплексні рішення для бізнесу
-              </p>
-              <div className="flex items-center text-gray-300">
-                <MapPin size={16} className="mr-2" />
-                <span>Київ, вул. Промислова, 15</span>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Каталог</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Холодильне обладнання
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Торгові ваги
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Стелажі та меблі
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Касове обладнання
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Послуги</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Проектування
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Монтаж
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Сервісне обслуговування
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Консультації
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Контакти</h3>
-              <div className="space-y-2 text-gray-300">
-                <div className="flex items-center">
-                  <Phone size={16} className="mr-2" />
-                  <span>+38 (067) 123-45-67</span>
-                </div>
-                <div className="flex items-center">
-                  <Mail size={16} className="mr-2" />
-                  <span>info@skladtech.ua</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SkladTech. Всі права захищені.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
