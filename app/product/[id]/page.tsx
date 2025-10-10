@@ -151,6 +151,7 @@ const ProductPage = () => {
       setQuantity(newQuantity);
     }
   };
+  
 
   const renderStars = (rating: any) => {
     return [...Array(5)].map((_, i) => (
