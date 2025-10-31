@@ -28,9 +28,44 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("description");
+  const [cart, setCart] = useState<number[]>([]);
+
+  // Считываем корзину при монтировании
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      try {
+        const parsed = JSON.parse(storedCart);
+        // на всякий случай проверяем, что это массив
+        if (Array.isArray(parsed)) {
+          setCart(parsed);
+        } else {
+          setCart([]);
+        }
+      } catch {
+        setCart([]);
+      }
+    }
+  }, []);
+
+  const handleCart = (id: number) => {
+    let newCart: number[];
+
+    if (cart.includes(id)) {
+      // Если товар уже в корзине — убираем
+      newCart = cart.filter((item) => item !== id);
+    } else {
+      // Если нет — добавляем
+      newCart = [...cart, id];
+    }
+
+    // Обновляем state и localStorage
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  };
   useEffect(() => {
     if (!productId) return;
-  
+
     const fetchProduct = async () => {
       try {
         setLoading(true);
@@ -42,10 +77,9 @@ const ProductPage = () => {
         setLoading(false);
       }
     };
-  
+
     fetchProduct();
   }, [productId]);
-  
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("uk-UA").format(price) + " ₴";
@@ -57,8 +91,6 @@ const ProductPage = () => {
       setQuantity(newQuantity);
     }
   };
-
-  
 
   if (loading) {
     return (
@@ -87,7 +119,9 @@ const ProductPage = () => {
   }
 
   const hasImages = product.images && product.images.length > 0;
-  const currentImage = hasImages ? product.images[selectedImageIndex]?.url : null;
+  const currentImage = hasImages
+    ? product.images[selectedImageIndex]?.url
+    : null;
 
   return (
     <div className="min-h-screen bg-white">
@@ -171,7 +205,7 @@ const ProductPage = () => {
             {/* Quantity and Add to Cart */}
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0">
-                <div className="flex items-center border border-gray-300 rounded-lg w-full sm:w-auto justify-between sm:justify-start">
+                {/* <div className="flex items-center border border-gray-300 rounded-lg w-full sm:w-auto justify-between sm:justify-start">
                   <button
                     onClick={() => handleQuantityChange(-1)}
                     className="p-3 hover:bg-gray-50 disabled:opacity-50 text-gray-700"
@@ -190,21 +224,35 @@ const ProductPage = () => {
                   >
                     <Plus size={16} />
                   </button>
-                </div>
+                </div> */}
 
-                <button className="flex-1 bg-green-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors flex items-center justify-center whitespace-nowrap">
-                  <ShoppingCart size={18} className="mr-2" />
-                  Додати в кошик
+                <button
+                  onClick={() => handleCart(product.id)}
+                  className={`${
+                    cart.includes(product.id)
+                      ? "bg-red-800 hover:bg-red-900"
+                      : "bg-green-800 hover:bg-green-900"
+                  } text-white cursor-pointer px-8 py-4 rounded-lg text-l font-medium  transition-colors whitespace-nowrap`}
+                >
+                  <div className="flex">
+                    <ShoppingCart size={18} className="mr-2" />
+                    <p>
+                      {" "}
+                      {cart.includes(+product.id)
+                        ? "Прибрати з кошика"
+                        : "В кошик"}
+                    </p>
+                  </div>
                 </button>
 
-                <div className="flex items-center space-x-3 justify-center sm:justify-start">
+                {/* <div className="flex items-center space-x-3 justify-center sm:justify-start">
                   <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700">
                     <Heart size={18} className="text-gray-600" />
                   </button>
                   <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700">
                     <Scale size={18} className="text-gray-600" />
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
 

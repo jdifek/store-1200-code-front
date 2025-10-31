@@ -28,11 +28,45 @@ const CatalogPage = () => {
   const [viewMode, setViewMode] = useState("grid"); // grid or list
   const [sortBy, setSortBy] = useState("createdAt");
   const [showFilters, setShowFilters] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [priceRange, setPriceRange] = useState([0, 100000000]);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<any[]>([]);
-  
+  const [cart, setCart] = useState<number[]>([]);
+
+  // Считываем корзину при монтировании
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      try {
+        const parsed = JSON.parse(storedCart);
+        // на всякий случай проверяем, что это массив
+        if (Array.isArray(parsed)) {
+          setCart(parsed);
+        } else {
+          setCart([]);
+        }
+      } catch {
+        setCart([]);
+      }
+    }
+  }, []);
+
+  const handleCart = (id: number) => {
+    let newCart: number[];
+
+    if (cart.includes(id)) {
+      // Если товар уже в корзине — убираем
+      newCart = cart.filter((item) => item !== id);
+    } else {
+      // Если нет — добавляем
+      newCart = [...cart, id];
+    }
+
+    // Обновляем state и localStorage
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  };
   useEffect(() => {
     loadCategories()
     loadProducts();
@@ -139,7 +173,7 @@ const CatalogPage = () => {
                     <input
                       type="number"
                       placeholder="Від"
-                      className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="w-20 px-2 py-1 border !text-black border-gray-300 rounded text-sm"
                       value={priceRange[0]}
                       onChange={(e) =>
                         setPriceRange([
@@ -152,12 +186,12 @@ const CatalogPage = () => {
                     <input
                       type="number"
                       placeholder="До"
-                      className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="w-20 px-2 py-1 border !text-black border-gray-300 rounded text-sm"
                       value={priceRange[1]}
                       onChange={(e) =>
                         setPriceRange([
                           priceRange[0],
-                          parseInt(e.target.value) || 100000,
+                          parseInt(e.target.value) || 100000000,
                         ])
                       }
                     />
@@ -166,7 +200,7 @@ const CatalogPage = () => {
               </div>
 
               {/* Rating filter */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <h4 className="font-medium text-gray-700 mb-3">Рейтинг</h4>
                 <div className="space-y-2">
                   {[5, 4, 3, 2, 1].map((rating) => (
@@ -200,7 +234,7 @@ const CatalogPage = () => {
                     </label>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -252,7 +286,7 @@ const CatalogPage = () => {
                 </div>
 
                 {/* Sort */}
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-600">Сортувати:</span>
                   <select
                     value={sortBy}
@@ -265,7 +299,7 @@ const CatalogPage = () => {
                     <option value="rating">За рейтингом</option>
                     <option value="name">За назвою</option>
                   </select>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -315,14 +349,14 @@ const CatalogPage = () => {
         </Link>
 
         {/* Кнопки действий */}
-        <div className="absolute top-2 left-2 flex space-x-1">
+        {/* <div className="absolute top-2 left-2 flex space-x-1">
           <button className="p-1 bg-white rounded-full shadow hover:bg-gray-50">
             <Scale size={12} className="text-gray-600" />
           </button>
           <button className="p-1 bg-white rounded-full shadow hover:bg-gray-50">
             <Heart size={12} className="text-gray-600" />
           </button>
-        </div>
+        </div> */}
 
         {/* Скидка */}
         {discount && (
@@ -335,7 +369,7 @@ const CatalogPage = () => {
       {/* Контент */}
       <div className={`${viewMode === "grid" ? "p-4" : "flex-1"}`}>
         {/* Рейтинг и отзывы */}
-        {(rating || reviews) && (
+        {/* {(rating || reviews) && (
           <div className="flex items-center mb-2">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
@@ -356,7 +390,7 @@ const CatalogPage = () => {
               </span>
             )}
           </div>
-        )}
+        )} */}
 
         {/* Название */}
         <Link
@@ -397,9 +431,18 @@ const CatalogPage = () => {
             )}
           </div>
 
-          <button className="bg-green-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-900 transition-colors">
-            В кошик
-          </button>
+          <button
+                      onClick={() => handleCart(product.id)}
+                      className={`${
+                        cart.includes(product.id)
+                          ? "bg-red-800 hover:bg-red-900"
+                          : "bg-green-800 hover:bg-green-900"
+                      } text-white cursor-pointer px-4 py-2 rounded-lg text-sm font-medium  transition-colors whitespace-nowrap`}
+                    >
+                      {cart.includes(+product.id)
+                        ? "Прибрати з кошика"
+                        : "В кошик"}
+                    </button>
         </div>
       </div>
     </div>
@@ -409,7 +452,7 @@ const CatalogPage = () => {
             </div>
 
             {/* Пагинация */}
-            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-12">
+            {/* <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-12">
               <button className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm text-gray-800 !text-gray-800 transition-colors">
                 Попередня
               </button>
@@ -431,7 +474,7 @@ const CatalogPage = () => {
               <button className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm text-gray-800 !text-gray-800 transition-colors">
                 Наступна
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

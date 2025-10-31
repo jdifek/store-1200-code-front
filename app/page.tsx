@@ -17,6 +17,7 @@ import {
 import { Header } from "@/components/Header";
 import Link from "next/link";
 import Image from "next/image";
+import { api } from "./api/http";
 
 // Mock данные на основе бэкенда
 const mockCategories = [
@@ -46,38 +47,7 @@ const mockCategories = [
   },
 ];
 
-const mockFeaturedProducts = [
-  {
-    id: "1",
-    name: "Мобильный растворный узел для кас, жку, сзр",
-    price: 160000,
-    oldPrice: null,
-    rating: 4,
-    reviews: 12,
-    discount: null,
-    image: "/4.jpg",
-  },
-  {
-    id: "2",
-    name: "Смешивающий растворный узел для жидких и сухих удо",
-    price: 185000,
-    oldPrice: 187000,
-    rating: 5,
-    reviews: 8,
-    discount: 10,
-    image: "/6.jpg",
-  },
-  {
-    id: "3",
-    name: "Вitmаin Аntminеr S21 Нydrо 319th",
-    price: 235000,
-    oldPrice: null,
-    rating: 4,
-    reviews: 15,
-    discount: null,
-    image: "/1.jpg",
-  },
-];
+
 
 const mockReviews = [
   {
@@ -101,10 +71,63 @@ const mockReviews = [
 
 const HomePage = () => {
   const [currentReview, setCurrentReview] = useState(0);
+  const [cart, setCart] = useState<number[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
 
+  // Считываем корзину при монтировании
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      try {
+        const parsed = JSON.parse(storedCart);
+        // на всякий случай проверяем, что это массив
+        if (Array.isArray(parsed)) {
+          setCart(parsed);
+        } else {
+          setCart([]);
+        }
+      } catch {
+        setCart([]);
+      }
+    }
+  }, []);
+
+  const handleCart = (id: number) => {
+    let newCart: number[];
+
+    if (cart.includes(id)) {
+      // Если товар уже в корзине — убираем
+      newCart = cart.filter((item) => item !== id);
+    } else {
+      // Если нет — добавляем
+      newCart = [...cart, id];
+    }
+
+    // Обновляем state и localStorage
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  };
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("uk-UA").format(price) + " ₴";
   };
+
+  const loadProducts = async () => {
+    try {
+      
+      // 🔧 Передаём напрямую, а не { params: query }
+      const res: any = await api.get("/products/three-random");
+  
+      // Обновляем состояние
+      setProducts(res.products || []);
+    } catch (err) {
+      console.error("Ошибка при загрузке продуктов:", err);
+      setProducts([]);
+    }
+  };
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -142,7 +165,11 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {mockCategories.map((category) => (
-              <Link href={'/catalog'} key={category.id} className="group cursor-pointer">
+              <Link
+                href={"/catalog"}
+                key={category.id}
+                className="group cursor-pointer"
+              >
                 <div className="bg-gray-100 rounded-lg overflow-hidden mb-4 aspect-[4/3] flex items-center justify-center">
                   <div className="text-6xl text-gray-400">📦</div>
                 </div>
@@ -157,129 +184,140 @@ const HomePage = () => {
 
       {/* Products Section */}
       <section className="py-12 sm:py-16 bg-gray-50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    {/* Заголовок + сортировка */}
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
-      <div>
-        <h2 className="text-2xl font-bold !text-gray-900 mb-2">
-          Рекомендовані товари
-        </h2>
-        <p className="!text-gray-700 text-sm sm:text-base">
-          Найпопулярніші рішення для торгового обладнання
-        </p>
-      </div>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
-        <span className="text-sm !text-gray-700 text-center sm:text-left">
-          Знайдено: <strong className="!text-gray-900">156</strong> товарів
-        </span>
-
-        <div className="flex items-center justify-center space-x-2">
-          <span className="text-sm !text-gray-700">Сортувати:</span>
-          <select className="border border-gray-300 rounded px-3 py-1.5 text-sm !text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-600">
-            <option>За замовчуванням</option>
-            <option>За ціною ↑</option>
-            <option>За ціною ↓</option>
-            <option>За рейтингом</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    {/* Сетка товаров */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-    {mockFeaturedProducts.map((product) => (
-  <div
-    key={product.id}
-    className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group"
-  >
-    {/* Изображение товара */}
-    <div className="relative">
-      <div className="relative aspect-[4/3] bg-gray-100 rounded-t-lg overflow-hidden">
-        <Link href={`/product/test`}>
-          {product.image ? (
-            <Image
-              alt={product.name}
-              src={product.image}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-            />
-          ) : (
-            <div className="flex items-center justify-center w-full h-full cursor-pointer">
-              <div className="text-4xl !text-gray-400">📦</div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Заголовок + сортировка */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
+            <div>
+              <h2 className="text-2xl font-bold !text-gray-900 mb-2">
+                Рекомендовані товари
+              </h2>
+              <p className="!text-gray-700 text-sm sm:text-base">
+                Найпопулярніші рішення для торгового обладнання
+              </p>
             </div>
-          )}
-        </Link>
-      </div>
 
-      {/* Кнопки действий */}
-      <div className="absolute top-3 left-3 flex space-x-2">
-        <button className="p-1.5 bg-white rounded-full shadow hover:bg-gray-50 transition-colors">
-          <Scale size={14} className="!text-gray-600" />
-        </button>
-        <button className="p-1.5 bg-white rounded-full shadow hover:bg-gray-50 transition-colors">
-          <Heart size={14} className="!text-gray-600" />
-        </button>
-      </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+              {/* <span className="text-sm !text-gray-700 text-center sm:text-left">
+                Знайдено: <strong className="!text-gray-900">156</strong>{" "}
+                товарів
+              </span> */}
 
-      {/* Скидка */}
-      {product.discount && (
-        <span className="absolute top-3 right-3 bg-yellow-400 !text-black px-2 py-1 rounded text-xs font-semibold">
-          -{product.discount}%
-        </span>
-      )}
-    </div>
-
-    {/* Описание и цена */}
-    <div className="p-5 sm:p-6">
-      {/* Рейтинг */}
-      <div className="flex items-center mb-2">
-        <div className="flex items-center">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              size={14}
-              className={`${
-                i < product.rating ? "!text-yellow-400 fill-current" : "!text-gray-300"
-              }`}
-            />
-          ))}
-        </div>
-        <span className="text-xs !text-gray-600 ml-2">
-          {product.reviews} відгуків
-        </span>
-      </div>
-
-      {/* Название */}
-      <Link href={`/product/test`}>
-        <h3 className="font-semibold !text-gray-900 mb-4 group-hover:!text-green-800 transition-colors text-sm sm:text-base line-clamp-2 cursor-pointer">
-          {product.name}
-        </h3>
-      </Link>
-
-      {/* Цена и кнопка */}
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-lg sm:text-xl font-bold !text-gray-900">
-            {formatPrice(product.price)}
+              {/* <div className="flex items-center justify-center space-x-2">
+                <span className="text-sm !text-gray-700">Сортувати:</span>
+                <select className="border border-gray-300 rounded px-3 py-1.5 text-sm !text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-600">
+                  <option>За замовчуванням</option>
+                  <option>За ціною ↑</option>
+                  <option>За ціною ↓</option>
+                  <option>За рейтингом</option>
+                </select>
+              </div> */}
+            </div>
           </div>
-          {product.oldPrice && (
-            <div className="text-sm !text-gray-500 line-through">
-              {formatPrice(product.oldPrice)}
-            </div>
-          )}
-        </div>
-        <button className="bg-green-800 !text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-900 transition-colors whitespace-nowrap">
-          В кошик
-        </button>
-      </div>
-    </div>
-  </div>
-))}
-    </div>
-  </div>
-</section>
 
+          {/* Сетка товаров */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group"
+              >
+                {/* Изображение товара */}
+                <div className="relative">
+                  <div className="relative aspect-[4/3] bg-gray-100 rounded-t-lg overflow-hidden">
+                    <Link href={`/product/${product.id}`}>
+                      {product.images ? (
+                        <Image
+                          alt={product.name}
+                          src={product.images?.[0]?.url}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full cursor-pointer">
+                          <div className="text-4xl !text-gray-400">📦</div>
+                        </div>
+                      )}
+                    </Link>
+                  </div>
+
+                  {/* Кнопки действий */}
+                  {/* <div className="absolute top-3 left-3 flex space-x-2">
+                    <button className="p-1.5 bg-white rounded-full shadow hover:bg-gray-50 transition-colors">
+                      <Scale size={14} className="!text-gray-600" />
+                    </button>
+                    <button className="p-1.5 bg-white rounded-full shadow hover:bg-gray-50 transition-colors">
+                      <Heart size={14} className="!text-gray-600" />
+                    </button>
+                  </div> */}
+
+                  {/* Скидка */}
+                  {product.discount && (
+                    <span className="absolute top-3 right-3 bg-yellow-400 !text-black px-2 py-1 rounded text-xs font-semibold">
+                      -{product.discount}%
+                    </span>
+                  )}
+                </div>
+
+                {/* Описание и цена */}
+                <div className="p-5 sm:p-6">
+                  {/* Рейтинг */}
+                  {/* <div className="flex items-center mb-2">
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className={`${
+                            i < product.rating
+                              ? "!text-yellow-400 fill-current"
+                              : "!text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-xs !text-gray-600 ml-2">
+                      {product.reviews} відгуків
+                    </span>
+                  </div> */}
+
+                  {/* Название */}
+                  <Link href={`/product/${product.id}`}>
+                    <h3 className="font-semibold !text-gray-900 mb-4 group-hover:!text-green-800 transition-colors text-sm sm:text-base line-clamp-2 cursor-pointer">
+                      {product.name}
+                    </h3>
+                  </Link>
+
+                  {/* Цена и кнопка */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-lg sm:text-xl font-bold !text-gray-900">
+                        {formatPrice(product.price)}
+                      </div>
+                      {product.oldPrice && (
+                        <div className="text-sm !text-gray-500 line-through">
+                          {formatPrice(product.oldPrice)}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleCart(product.id)}
+                      className={`${
+                        cart.includes(product.id)
+                          ? "bg-red-800 hover:bg-red-900"
+                          : "bg-green-800 hover:bg-green-900"
+                      } text-white cursor-pointer px-4 py-2 rounded-lg text-sm font-medium  transition-colors whitespace-nowrap`}
+                    >
+                      {cart.includes(+product.id)
+                        ? "Прибрати з кошика"
+                        : "В кошик"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Reviews Section */}
       <section className="py-16">
