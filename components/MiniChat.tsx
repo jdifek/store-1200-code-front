@@ -15,8 +15,9 @@ const MiniChat = () => {
   
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const API_URL = 'http://localhost:5000/api';
-  const SOCKET_URL = 'http://localhost:5000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const SOCKET_URL = process.env.SOCKET_URL || 'http://localhost:5000';
+
 
   // Получить или создать sessionId
   useEffect(() => {
