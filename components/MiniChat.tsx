@@ -12,12 +12,12 @@ const MiniChat = () => {
   const [sessionId, setSessionId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [socketReady, setSocketReady] = useState(false);
   
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   const SOCKET_URL = process.env.SOCKET_URL || process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000';
-
 
   // Получить или создать sessionId
   useEffect(() => {
@@ -33,37 +33,74 @@ const MiniChat = () => {
   useEffect(() => {
     if (!sessionId) return;
 
-    // Динамическая загрузка socket.io-client
     const script = document.createElement('script');
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js';
     script.async = true;
     script.onload = () => {
       socketRef.current = window.io(SOCKET_URL, {
-        transports: ['websocket', 'polling']
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000
       });
 
       socketRef.current.on('connect', () => {
-        console.log('✅ Підключено до Socket.IO');
+        console.log('✅ Клієнт підключено до Socket.IO');
         setIsConnected(true);
+        setSocketReady(true);
+        
+        // Если есть chatId, переподключаемся к комнате
+        const savedChatId = localStorage.getItem('chat_id');
+        if (savedChatId) {
+          socketRef.current.emit('join-chat', savedChatId);
+          console.log('🔄 Переподключено до чату:', savedChatId);
+        }
       });
 
       socketRef.current.on('disconnect', () => {
         console.log('❌ Відключено від Socket.IO');
         setIsConnected(false);
+        setSocketReady(false);
       });
 
+      // Слушаем новые сообщения
       socketRef.current.on('new-message', (message) => {
-        setMessages(prev => [...prev, message]);
+        console.log('📨 Нове повідомлення:', message);
+        setMessages(prev => {
+          // Проверяем, нет ли уже такого сообщения
+          if (prev.some(m => m.id === message.id)) {
+            return prev;
+          }
+          return [...prev, message];
+        });
         
         if (!isOpen || isMinimized) {
           setUnreadCount(prev => prev + 1);
         }
       });
 
+      // Подтверждение отправки сообщения
+      socketRef.current.on('message-sent', (message) => {
+        console.log('✅ Повідомлення відправлено:', message);
+        setMessages(prev => {
+          // Заменяем временное сообщение на реальное
+          const filtered = prev.filter(m => !m.id.startsWith('temp-'));
+          if (filtered.some(m => m.id === message.id)) {
+            return filtered;
+          }
+          return [...filtered, message];
+        });
+      });
+
       socketRef.current.on('error', (error) => {
         console.error('Socket помилка:', error);
       });
     };
+    
+    script.onerror = () => {
+      console.error('❌ Помилка завантаження Socket.IO');
+    };
+    
     document.body.appendChild(script);
 
     return () => {
@@ -91,9 +128,17 @@ const MiniChat = () => {
             setChatId(savedChatId);
             setMessages(data.chat.messages || []);
             
-            if (socketRef.current) {
-              socketRef.current.emit('join-chat', savedChatId);
-            }
+            // Ждем пока Socket.IO подключится
+            const checkSocket = setInterval(() => {
+              if (socketRef.current?.connected) {
+                socketRef.current.emit('join-chat', savedChatId);
+                console.log('🔗 Приєднано до чату:', savedChatId);
+                clearInterval(checkSocket);
+              }
+            }, 100);
+            
+            // Таймаут на случай если Socket не подключится
+            setTimeout(() => clearInterval(checkSocket), 5000);
             return;
           }
         }
@@ -110,16 +155,23 @@ const MiniChat = () => {
         setChatId(newChatId);
         localStorage.setItem('chat_id', newChatId);
 
-        if (socketRef.current) {
-          socketRef.current.emit('join-chat', newChatId);
-        }
+        // Ждем пока Socket.IO подключится
+        const checkSocket = setInterval(() => {
+          if (socketRef.current?.connected) {
+            socketRef.current.emit('join-chat', newChatId);
+            console.log('🔗 Приєднано до нового чату:', newChatId);
+            clearInterval(checkSocket);
+          }
+        }, 100);
+        
+        setTimeout(() => clearInterval(checkSocket), 5000);
       } catch (error) {
         console.error('Помилка ініціалізації чату:', error);
       }
     };
 
     initChat();
-  }, [sessionId]);
+  }, [sessionId, API_URL]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -148,25 +200,59 @@ const MiniChat = () => {
         setChatId(currentChatId);
         localStorage.setItem('chat_id', currentChatId);
         
-        if (socketRef.current) {
+        if (socketRef.current?.connected) {
           socketRef.current.emit('join-chat', currentChatId);
         }
       }
 
-      if (socketRef.current && isConnected && currentChatId) {
+      if (!currentChatId) {
+        console.error('❌ Немає ID чату');
+        return;
+      }
+
+      // Создаем временное сообщение для мгновенного отображения
+      const tempMessage = {
+        id: `temp-${Date.now()}`,
+        content: messageContent,
+        createdAt: new Date().toISOString(),
+        fromAdmin: false,
+        chatId: currentChatId
+      };
+      
+      setMessages(prev => [...prev, tempMessage]);
+
+      // Пытаемся отправить через WebSocket
+      if (socketRef.current?.connected && socketReady) {
+        console.log('📤 Відправка через Socket.IO:', { chatId: currentChatId, content: messageContent });
         socketRef.current.emit('client-message', {
           chatId: currentChatId,
           content: messageContent
         });
-      } else if (currentChatId) {
-        await fetch(`${API_URL}/chats/${currentChatId}/messages`, {
+      } else {
+        // Fallback на HTTP API
+        console.log('📤 Відправка через HTTP API (Socket не підключено)');
+        const response = await fetch(`${API_URL}/chats/${currentChatId}/messages`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: messageContent })
         });
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Удаляем временное сообщение и добавляем реальное
+          setMessages(prev => {
+            const filtered = prev.filter(m => m.id !== tempMessage.id);
+            return [...filtered, data.message];
+          });
+        } else {
+          // Удаляем временное сообщение если ошибка
+          setMessages(prev => prev.filter(m => m.id !== tempMessage.id));
+          throw new Error('Помилка відправки повідомлення');
+        }
       }
     } catch (error) {
       console.error('Помилка відправки повідомлення:', error);
+      alert('Не вдалося відправити повідомлення. Спробуйте ще раз.');
     }
   };
 
@@ -265,7 +351,7 @@ const MiniChat = () => {
                           msg.fromAdmin
                             ? 'bg-white text-gray-800 shadow'
                             : 'bg-blue-600 text-white'
-                        }`}
+                        } ${msg.id.startsWith('temp-') ? 'opacity-60' : ''}`}
                       >
                         <p className="text-sm break-words">{msg.content}</p>
                         <p
@@ -274,6 +360,7 @@ const MiniChat = () => {
                           }`}
                         >
                           {formatTime(msg.createdAt)}
+                          {msg.id.startsWith('temp-') && ' (відправка...)'}
                         </p>
                       </div>
                     </div>
