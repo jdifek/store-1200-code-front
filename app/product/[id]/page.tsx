@@ -289,9 +289,9 @@ const ProductPage = () => {
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="flex-1 border border-green-800 text-green-800 px-6 py-3 rounded-lg font-semibold hover:bg-green-800 hover:text-white transition-colors">
+              {/* <button className="flex-1 border border-green-800 text-green-800 px-6 py-3 rounded-lg font-semibold hover:bg-green-800 hover:text-white transition-colors">
                 Купити в 1 клік
-              </button>
+              </button> */}
               <button className="flex-1 bg-yellow-200 text-green-800 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">
                 Замовити дзвінок
               </button>

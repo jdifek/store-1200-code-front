@@ -413,9 +413,7 @@ console.log(isCheckoutOpen, 'isCheckoutOpen');
  className="w-full bg-green-800 text-white py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors mb-3">
                 Оформити замовлення
               </button>
-              <button className="w-full border border-green-800 text-green-800 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors">
-                Купити в 1 клік
-              </button>
+           
             </div>
           </div>
         </div>

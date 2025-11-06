@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Scale, Heart, Filter, Star, Grid, List } from "lucide-react";
 import Link from "next/link";
 import { api } from "../api/http";
+import { useRouter } from "next/navigation";
 export interface Category {
   id: string;
   name: string;
@@ -24,7 +25,6 @@ export interface Product {
 
 const CatalogPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState("grid"); // grid or list
   const [sortBy, setSortBy] = useState("createdAt");
   const [showFilters, setShowFilters] = useState(false);
@@ -33,6 +33,59 @@ const CatalogPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [cart, setCart] = useState<number[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = urlParams.get("categoryId");
+    if (categoryId) {
+      setSelectedCategory(categoryId);
+      loadProducts(categoryId); // ✅ загружаем товары по категории
+    } else {
+      loadProducts(); // ✅ загружаем все товары
+    }
+  }, []);
+  
+  useEffect(() => {
+    loadCategories();
+  
+    // Загружаем товары только если selectedCategory не задавался из URL
+    if (selectedCategory === null) {
+      loadProducts();
+    }
+  }, [searchQuery, sortBy, priceRange]);
+  
+
+  const loadProducts = async (categoryId?: string) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryIda = urlParams.get("categoryId");
+    try {
+      // Формируем параметры запроса
+      const query = {
+        page: 1,
+        limit: 20,
+        filters: {
+          search: searchQuery || undefined,
+          categoryId:categoryIda || categoryId || selectedCategory || undefined,
+          minPrice: priceRange?.[0] || undefined,
+          maxPrice: priceRange?.[1] || undefined,
+        },
+        sortBy,
+        sortOrder: "desc",
+      };
+  
+      // 🔧 Передаём напрямую, а не { params: query }
+      const res: any = await api.get("/products", query);
+  
+      // Обновляем состояние
+      setProducts(res.products || []);
+    } catch (err) {
+      console.error("Ошибка при загрузке продуктов:", err);
+      setProducts([]);
+    }
+  };
+  
 
   // Считываем корзину при монтировании
   useEffect(() => {
@@ -67,39 +120,20 @@ const CatalogPage = () => {
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
   };
-  useEffect(() => {
-    loadCategories()
-    loadProducts();
-    console.log(selectedCategory, 'ad');
-  }, [selectedCategory, searchQuery, sortBy, priceRange]);
-
-  const loadProducts = async () => {
-    try {
-      // Формируем параметры запроса
-      const query = {
-        page: 1,
-        limit: 20,
-        filters: {
-          search: searchQuery || undefined,
-          categoryId: selectedCategory || undefined,
-          minPrice: priceRange?.[0] || undefined,
-          maxPrice: priceRange?.[1] || undefined,
-        },
-        sortBy,
-        sortOrder: "desc",
-      };
+ 
+  const handleCategoryClick = async (categoryId: string) => {
+    const newCategory = selectedCategory === categoryId ? null : categoryId;
+    setSelectedCategory(newCategory);
   
-      // 🔧 Передаём напрямую, а не { params: query }
-      const res: any = await api.get("/products", query);
+    const url = newCategory
+      ? `/catalog?categoryId=${newCategory}`
+      : `/catalog`;
   
-      // Обновляем состояние
-      setProducts(res.products || []);
-    } catch (err) {
-      console.error("Ошибка при загрузке продуктов:", err);
-      setProducts([]);
-    }
+    router.push(url);
+  
+    // Загружаем товары вручную с переданным categoryId
+    await loadProducts(newCategory || undefined);
   };
-  
   
 
   const loadCategories = async () => {
@@ -144,11 +178,8 @@ const CatalogPage = () => {
               {categories.map((category) => (
                 <button
                   key={category.id}
-                  onClick={() =>
-                    setSelectedCategory(
-                      selectedCategory === category.id ? null : category.id
-                    )
-                  }
+                  onClick={() => handleCategoryClick(category.id)}
+
                   className={`w-full text-left py-2 px-3 rounded-lg flex items-center justify-between hover:bg-gray-50 ${
                     selectedCategory === category.id
                       ? "bg-green-50 text-green-800"

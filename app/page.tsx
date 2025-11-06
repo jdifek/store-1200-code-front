@@ -47,8 +47,6 @@ const mockCategories = [
   },
 ];
 
-
-
 const mockReviews = [
   {
     id: "1",
@@ -73,6 +71,7 @@ const HomePage = () => {
   const [currentReview, setCurrentReview] = useState(0);
   const [cart, setCart] = useState<number[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
 
   // Считываем корзину при монтировании
   useEffect(() => {
@@ -113,10 +112,9 @@ const HomePage = () => {
 
   const loadProducts = async () => {
     try {
-      
       // 🔧 Передаём напрямую, а не { params: query }
       const res: any = await api.get("/products/three-random");
-  
+
       // Обновляем состояние
       setProducts(res.products || []);
     } catch (err) {
@@ -124,10 +122,23 @@ const HomePage = () => {
       setProducts([]);
     }
   };
+
+  const getTopFourCategories = async () => {
+    try {
+      // 🔧 Передаём напрямую, а не { params: query }
+      const res: any = await api.get("/categories/getTopFourCategories");
+
+      // Обновляем состояние
+      setCategories(res.categories || []);
+    } catch (err) {
+      console.error("Ошибка при загрузке продуктов:", err);
+      setProducts([]);
+    }
+  };
   useEffect(() => {
+    getTopFourCategories();
     loadProducts();
   }, []);
-
 
   return (
     <div className="min-h-screen bg-white">
@@ -164,9 +175,9 @@ const HomePage = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {mockCategories.map((category) => (
+            {categories.map((category) => (
               <Link
-                href={"/catalog"}
+                href={`/catalog?categoryId=${category.id}`}
                 key={category.id}
                 className="group cursor-pointer"
               >
